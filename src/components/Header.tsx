@@ -1,29 +1,26 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } f
-import { ShoppingCart, Palette } from '@phosphor-icons/react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Palette } from '@phosphor-icons/react';
 import { useKV } from '@github/spark/hooks';
 import { THEMES, type Theme } from '@/lib/types';
 
 interface HeaderProps {
-export function Header({
+  cartItemCount: number;
   onCartClick: () => void;
 }
 
 export function Header({ cartItemCount, onCartClick }: HeaderProps) {
   const [currentTheme, setCurrentTheme] = useKV<Theme>('sport-year-theme', 'default');
 
-
-    switch (theme) {
-    
-        return 'bg-orange-500';
-        return 'bg-green-500';
-    
-  };
-  return (
-      <div className="container mx-auto px-4 py-4 fl
+  const handleThemeChange = (theme: Theme) => {
+    setCurrentTheme(theme);
+    // Apply theme to document
+    document.body.className = document.body.className.replace(/theme-\w+/g, '');
+    if (theme !== 'default') {
+      document.body.classList.add(`theme-${theme}`);
     }
   };
 
@@ -58,7 +55,7 @@ export function Header({ cartItemCount, onCartClick }: HeaderProps) {
             <SheetTrigger asChild className="hidden sm:inline-flex">
               <Button variant="outline" size="icon">
                 <Palette className="w-4 h-4" />
-                  ))}
+              </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <div className="py-6">
@@ -72,54 +69,56 @@ export function Header({ cartItemCount, onCartClick }: HeaderProps) {
                           ? 'border-primary bg-primary/5' 
                           : 'border-border hover:border-primary/50'
                       }`}
-          <Button 
+                      onClick={() => handleThemeChange(theme.value)}
                     >
-            onClick={onCartClick}
+                      <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium">{theme.label}</h4>
                           <p className="text-sm text-muted-foreground">{theme.description}</p>
-                variant="destr
+                        </div>
                         <div className={`w-6 h-6 rounded-full ${getThemeColorClass(theme.value)}`} />
-                {cartItemCou
+                      </div>
                     </div>
-          </Button>
+                  ))}
                 </div>
               </div>
             </SheetContent>
           </Sheet>
 
-
+          {/* Mobile Theme Selector */}
           <Select value={currentTheme} onValueChange={handleThemeChange}>
-
-              <Palette className="w-4 h-4" />
+            <SelectTrigger className="w-[120px] sm:hidden">
+              <Palette className="w-4 h-4 mr-2" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {THEMES.map((theme) => (
                 <SelectItem key={theme.value} value={theme.value}>
-                  {theme.name}
+                  {theme.label}
                 </SelectItem>
-
+              ))}
             </SelectContent>
+          </Select>
 
-
-
+          {/* Cart Button */}
           <Button 
             variant="outline" 
             size="icon"
             onClick={onCartClick}
-
-
+            className="relative"
+          >
             <ShoppingCart className="w-4 h-4" />
-
+            {cartItemCount > 0 && (
               <Badge 
                 variant="destructive" 
                 className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
-
+              >
                 {cartItemCount}
-
+              </Badge>
             )}
-
+          </Button>
         </div>
       </div>
     </header>
-
+  );
+}
