@@ -1,29 +1,29 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } f
+import { ShoppingCart, Palette } from '@phosphor-icons/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingCart, Palette } from '@phosphor-icons/react';
 import { useKV } from '@github/spark/hooks';
 import { THEMES, type Theme } from '@/lib/types';
 
 interface HeaderProps {
-  cartItemCount: number;
+export function Header({
   onCartClick: () => void;
 }
 
 export function Header({ cartItemCount, onCartClick }: HeaderProps) {
   const [currentTheme, setCurrentTheme] = useKV<Theme>('sport-year-theme', 'default');
 
-  const handleThemeChange = (theme: Theme) => {
-    setCurrentTheme(theme);
+
+    switch (theme) {
     
-    // Remove all theme classes
-    document.body.classList.remove('theme-dark', 'theme-energy', 'theme-nature');
+        return 'bg-orange-500';
+        return 'bg-green-500';
     
-    // Add new theme class if not default
-    if (theme !== 'default') {
-      document.body.classList.add(`theme-${theme}`);
+  };
+  return (
+      <div className="container mx-auto px-4 py-4 fl
     }
   };
 
@@ -58,7 +58,7 @@ export function Header({ cartItemCount, onCartClick }: HeaderProps) {
             <SheetTrigger asChild className="hidden sm:inline-flex">
               <Button variant="outline" size="icon">
                 <Palette className="w-4 h-4" />
-              </Button>
+                  ))}
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <div className="py-6">
@@ -72,55 +72,54 @@ export function Header({ cartItemCount, onCartClick }: HeaderProps) {
                           ? 'border-primary bg-primary/5' 
                           : 'border-border hover:border-primary/50'
                       }`}
-                      onClick={() => handleThemeChange(theme.value)}
+          <Button 
                     >
-                      <div className="flex items-center justify-between">
+            onClick={onCartClick}
                         <div>
                           <h4 className="font-medium">{theme.label}</h4>
                           <p className="text-sm text-muted-foreground">{theme.description}</p>
-                        </div>
+                variant="destr
                         <div className={`w-6 h-6 rounded-full ${getThemeColorClass(theme.value)}`} />
-                      </div>
+                {cartItemCou
                     </div>
-                  ))}
+          </Button>
                 </div>
               </div>
             </SheetContent>
           </Sheet>
 
-          {/* Mobile Theme Selector */}
+
           <Select value={currentTheme} onValueChange={handleThemeChange}>
-            <SelectTrigger className="w-16 sm:hidden">
+
               <Palette className="w-4 h-4" />
             </SelectTrigger>
             <SelectContent>
               {THEMES.map((theme) => (
                 <SelectItem key={theme.value} value={theme.value}>
-                  {theme.label}
+                  {theme.name}
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
 
-          {/* Cart Button */}
+            </SelectContent>
+
+
+
           <Button 
             variant="outline" 
             size="icon"
             onClick={onCartClick}
-            className="relative"
-          >
+
+
             <ShoppingCart className="w-4 h-4" />
-            {cartItemCount > 0 && (
+
               <Badge 
                 variant="destructive" 
                 className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
-              >
+
                 {cartItemCount}
-              </Badge>
+
             )}
-          </Button>
+
         </div>
       </div>
     </header>
-  );
-}
+
